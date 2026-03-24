@@ -1,0 +1,29 @@
+.project-card__meta {
+  margin-bottom: 20px;
+}
+
+.project-participants {
+  margin-bottom: 8px;
+  font-size: 15px;
+  opacity: 0.85;
+  color: var(--project-card-text);
+}
+
+.project-detail-link {
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.project-detail-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.project-card__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
