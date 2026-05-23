@@ -569,3 +569,539 @@ body {
   font-weight: 500;
 }
 
+/* Sign Up - Clean boxed design */
+.auth-wrapper {
+  max-width: 420px;
+  margin: 60px auto;
+  text-align: center;
+}
+
+.auth-card {
+  background: var(--project-card-bg);
+  border-radius: 16px;
+  padding: 48px 36px 40px;
+  box-shadow: var(--box-shadow);
+  border: 1px solid var(--black-border);
+}
+
+.auth-card .title-1 {
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  margin-bottom: 32px;
+  font-size: 17px;
+  opacity: 0.8;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--black-border);
+  background: var(--page-bg);
+  color: var(--text-color);
+  font-size: 16px;
+}
+
+.role-selection {
+  margin-top: 12px;
+}
+
+.role-options {
+  display: flex;
+  gap: 14px;
+}
+
+.role-box {
+  flex: 1;
+  padding: 18px 20px;
+  border: 2px solid var(--black-border);
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+  background: var(--project-card-bg);
+}
+
+.role-box:hover {
+  border-color: var(--accent);
+}
+
+.role-box.selected {
+  border-color: var(--accent);
+  background: rgba(92, 98, 236, 0.1);
+  color: var(--accent);
+}
+
+.auth-link {
+  margin-top: 28px;
+  font-size: 15px;
+}
+
+.auth-link a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 620px) {
+  .auth-card {
+    padding: 36px 24px 32px;
+    margin: 20px auto;
+  }
+}
+/* Application Form Styles */
+.application-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.application-form {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.form-section {
+  background: var(--project-card-bg);
+  padding: 32px;
+  border-radius: 12px;
+  margin-bottom: 32px;
+  box-shadow: var(--box-shadow);
+}
+
+.question-label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+  font-size: 17px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--black-border);
+  background: var(--page-bg);
+  color: var(--text-color);
+  font-size: 16px;
+}
+
+.teammate-row {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--black-border);
+}
+
+.teammate-row:last-child {
+  border-bottom: none;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  accent-color: var(--accent);
+}
+
+/* Reuse existing styles where possible */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 620px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .form-section {
+    padding: 24px;
+  }
+}
+
+/* Dashboard Styles */
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.dashboard-subtitle {
+  font-size: 20px;
+  opacity: 0.85;
+  margin-top: 12px;
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 28px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.dashboard-card {
+  background: var(--project-card-bg);
+  border-radius: 16px;
+  padding: 40px 32px;
+  box-shadow: var(--box-shadow);
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-6px);
+}
+
+.dashboard-card h2 {
+  margin-bottom: 16px;
+  font-size: 26px;
+  color: var(--title-1);
+}
+
+.dashboard-card p {
+  margin-bottom: 32px;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+/* Profile Page Styles */
+.profile-card {
+  padding: 48px 36px 40px;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.profile-header h2 {
+  margin-bottom: 8px;
+  font-size: 28px;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: var(--accent);
+  color: white;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.profile-section {
+  margin-bottom: 28px;
+}
+
+.profile-section label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.profile-info {
+  font-size: 17px;
+  padding: 12px 16px;
+  background: var(--project-card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--black-border);
+}
+
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.skill-tag {
+  background: var(--accent);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skill-remove {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.add-skill-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.add-skill-row input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--black-border);
+  background: var(--project-card-bg);
+  color: var(--text-color);
+}
+
+/* My Applications Styles */
+.applications-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.application-card {
+  background: var(--project-card-bg);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--box-shadow);
+  transition: transform 0.2s ease;
+}
+
+.application-card:hover {
+  transform: translateY(-4px);
+}
+
+.application-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.application-title {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+  flex: 1;
+}
+
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-accepted {
+  background: #27ae60;
+  color: white;
+}
+
+.status-rejected {
+  background: #e74c3c;
+  color: white;
+}
+
+.status-pending {
+  background: #f39c12;
+  color: white;
+}
+
+.application-meta {
+  margin-bottom: 28px;
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+.application-meta p {
+  margin: 6px 0;
+}
+
+.application-actions {
+  text-align: center;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.empty-state p {
+  font-size: 18px;
+  margin-bottom: 24px;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 15px;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--nav-text);
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.logout-btn:hover {
+  opacity: 0.8;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--nav-text);
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.logout-btn:hover {
+  opacity: 0.8;
+}
+
+.reg-option {
+  padding: 18px 20px;
+  border: 2px solid var(--black-border);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.reg-option:hover,
+.reg-option.selected {
+  border-color: var(--accent);
+  background: rgba(92, 98, 236, 0.08);
+}
+
+.idea-card {
+  padding: 16px;
+  border: 2px solid var(--black-border);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.idea-card:hover,
+.idea-card.selected {
+  border-color: var(--accent);
+  background: rgba(92, 98, 236, 0.08);
+}
+
+.idea-form {
+  margin-top: 20px;
+}
+
+.team-card {
+  background: var(--project-card-bg);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: var(--box-shadow);
+  max-width: 700px;
+  margin: 40px auto;
+}
+
+.team-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.team-header h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.status-accepted {
+  background: #27ae60;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 15px;
+}
+
+.idea-box {
+  background: rgba(92, 98, 236, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 32px;
+  border-left: 5px solid var(--accent);
+}
+
+.team-members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.team-member-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--page-bg);
+  border-radius: 8px;
+  border: 1px solid var(--black-border);
+}
+
+.member-role {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.application-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-start;   /* Keeps buttons aligned to the left */
+  margin-top: 24px;
+}
+
+/* Optional: Make sure both buttons have same height */
+.application-actions .btn {
+  min-width: 160px;
+  text-align: center;
+}

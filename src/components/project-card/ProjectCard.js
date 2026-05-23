@@ -2,9 +2,7 @@ import { Link } from 'react-router-dom';
 import './style.css';
 
 export default function ProjectCard({ project, onEdit }) {
-  const hasParticipantRange =
-    project.minNrParticipants !== undefined &&
-    project.maxNrParticipants !== undefined;
+  const hasParticipantRange = project.minNrParticipants && project.maxNrParticipants;
 
   return (
     <div className="project-card">
@@ -15,20 +13,14 @@ export default function ProjectCard({ project, onEdit }) {
           <p className="project-participants">
             Participants: {project.minNrParticipants} – {project.maxNrParticipants}
           </p>
-          <Link
-            to={`/project/${project.projectId}`}
-            className="project-detail-link"
-          >
+          <Link to={`/project/${project.projectId}`} className="project-detail-link">
             View details
           </Link>
         </div>
       )}
 
       <div className="project-card__actions">
-        <Link
-          to={`/participants/${project.projectId}`}
-          className="btn"
-        >
+        <Link to={`/participants/${project.projectId}`} className="btn">
           View participants
         </Link>
 

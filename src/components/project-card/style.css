@@ -27,3 +27,10 @@
   flex-wrap: wrap;
   margin-top: 16px;
 }
+
+.project-card__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}

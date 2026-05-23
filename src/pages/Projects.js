@@ -1,38 +1,47 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ProjectCard from '../components/project-card/ProjectCard';
-import '../styles/main.css'; // usually already global, but safe to keep
+import { projectAPI } from '../services/apiClient';
 
 export default function Projects() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // TODO: replace with real API call later
-    // Example: fetch('/api/projects').then(...)
-    setTimeout(() => {
-      setProjects([
-        {
-          projectId: 'p1',
-          projectName: 'AI for Social Good 2026',
-          minNrParticipants: 3,
-          maxNrParticipants: 6,
-        },
-        {
-          projectId: 'p2',
-          projectName: 'Sustainable City Challenge',
-          minNrParticipants: 2,
-          maxNrParticipants: 5,
-        },
-        {
-          projectId: 'p3',
-          projectName: 'Open Source Education Platform',
-          // no min/max → won't show range
-        },
-      ]);
-      setLoading(false);
-    }, 600);
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await projectAPI.getAllProjects();
+        setProjects(Array.isArray(data) ? data : data.projects || []);
+      } catch (err) {
+        console.error('Error fetching projects:', err);
+        setError(err.message);
+        // Fallback to mock data for demo
+        setProjects([
+          {
+            projectId: 'p1',
+            projectName: 'AI for Social Good 2026',
+            registrationType: 'A',
+            minNrParticipants: 3,
+            maxNrParticipants: 6,
+          },
+          {
+            projectId: 'p2',
+            projectName: 'Sustainable City Challenge',
+            registrationType: 'B',
+            minNrParticipants: 2,
+            maxNrParticipants: 5,
+          },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
   }, []);
 
   const handleEditClick = (projectId) => {
@@ -43,7 +52,7 @@ export default function Projects() {
     <main className="section">
       <div className="container">
         <div className="projects-header">
-          <h1 className="title-1">Projects</h1>
+          <h1 className="title-1">My Projects</h1>
           <Link to="/new-project" className="btn">
             Create project
           </Link>
@@ -51,8 +60,8 @@ export default function Projects() {
 
         {loading ? (
           <p className="loading">Loading projects...</p>
-        ) : projects.length === 0 ? (
-          <p className="empty">No projects created yet.</p>
+        ) : error ? (
+          <p className="error-message">Error loading projects. Showing cached data.</p>
         ) : (
           <div className="projects-grid">
             {projects.map((project) => (
