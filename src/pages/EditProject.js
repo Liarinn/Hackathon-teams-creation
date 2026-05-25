@@ -90,6 +90,25 @@ export default function EditProject() {
     });
   };
 
+  const addOptionToQuestion = (index, option) => {
+    setForm((prev) => {
+      const qs = [...prev.formQuestions];
+      if (!qs[index].possibleAnswers) qs[index].possibleAnswers = [];
+      if (option.trim()) {
+        qs[index].possibleAnswers = [...qs[index].possibleAnswers, option.trim()];
+      }
+      return { ...prev, formQuestions: qs };
+    });
+  };
+
+  const removeOptionFromQuestion = (index, optionIndex) => {
+    setForm((prev) => {
+      const qs = [...prev.formQuestions];
+      qs[index].possibleAnswers = qs[index].possibleAnswers.filter((_, i) => i !== optionIndex);
+      return { ...prev, formQuestions: qs };
+    });
+  };
+
   const removeQuestion = (index) => {
     setForm((prev) => ({
       ...prev,
@@ -273,10 +292,69 @@ export default function EditProject() {
                   onChange={(e) => updateQuestion(idx, 'questionType', e.target.value)}
                 >
                   <option value="TEXT">Text</option>
+                  <option value="TEXTAREA">Long text</option>
                   <option value="CHECKBOX">Checkbox</option>
+                  <option value="RADIO">Radio button</option>
+                  <option value="DROPDOWN">Dropdown</option>
                   <option value="FILE">File upload</option>
                 </select>
               </div>
+
+              {/* Show options input for CHECKBOX, RADIO, and DROPDOWN */}
+              {(q.questionType === 'CHECKBOX' || q.questionType === 'RADIO' || q.questionType === 'DROPDOWN') && (
+                <div className="form-group">
+                  <label>Possible Answers *</label>
+                  <div style={{ marginBottom: '15px' }}>
+                    {q.possibleAnswers && q.possibleAnswers.length > 0 && (
+                      <div style={{ marginBottom: '15px' }}>
+                        {q.possibleAnswers.map((option, optIdx) => (
+                          <div
+                            key={optIdx}
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              padding: '8px 12px',
+                              backgroundColor: '#f5f5f5',
+                              borderRadius: '4px',
+                              marginBottom: '8px',
+                            }}
+                          >
+                            <span>{option}</span>
+                            <button
+                              type="button"
+                              onClick={() => removeOptionFromQuestion(idx, optIdx)}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                color: '#d32f2f',
+                                cursor: 'pointer',
+                                fontSize: '18px',
+                                padding: 0,
+                              }}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="add-skill-row">
+                      <input
+                        type="text"
+                        placeholder={`Add a ${q.questionType === 'CHECKBOX' ? 'checkbox' : q.questionType === 'RADIO' ? 'radio' : 'dropdown'} option`}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            addOptionToQuestion(idx, e.target.value);
+                            e.target.value = '';
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
 

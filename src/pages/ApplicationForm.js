@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { applicationAPI } from '../services/apiClient';
+import { applicationAPI, projectAPI } from '../services/apiClient';
 
 export default function ApplicationForm() {
   const { projectId } = useParams();
@@ -20,49 +20,90 @@ export default function ApplicationForm() {
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      const projectsData = {
-        p1: { 
-          projectId: 'p1', 
-          projectName: 'AI for Social Good 2026', 
+    const fetchProject = async () => {
+      try {
+        setLoading(true);
+        const data = await projectAPI.getProjectById(projectId);
+        setProject(data);
+
+        // Initialize answers based on project questions
+        const initialAnswers = (data.formQuestions || []).map((q) => ({
+          questionNumber: q.questionNumber,
+          questionType: q.questionType,
+          question: q.question,
+          possibleAnswers: q.possibleAnswers || [],
+          answer: q.questionType === 'CHECKBOX' ? [] : '',
+        }));
+
+        setFormData(prev => ({ ...prev, answers: initialAnswers }));
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching project:', err);
+        setError(err.message);
+        // Fallback mock data
+        setProject({
+          projectId: projectId,
+          projectName: `Project ${projectId}`,
           teamsPreformed: false,
-          existingIdeas: [
-            { id: 'idea1', title: 'AI Chatbot for Education', author: 'Maria I.' },
-            { id: 'idea2', title: 'Smart Waste Management', author: 'Alex P.' }
-          ]
-        },
-        p2: { 
-          projectId: 'p2', 
-          projectName: 'Sustainable City Challenge', 
-          teamsPreformed: true 
-        },
-        p3: { 
-          projectId: 'p3', 
-          projectName: 'Open Source Education Platform', 
-          teamsPreformed: false,
-          existingIdeas: [
-            { id: 'idea3', title: 'Interactive Learning Platform', author: 'Elena D.' }
-          ]
-        }
-      };
+          formQuestions: [
+            { 
+              questionNumber: 1, 
+              questionType: 'TEXT', 
+              question: 'Motivation letter',
+              possibleAnswers: []
+            },
+            { 
+              questionNumber: 2, 
+              questionType: 'CHECKBOX', 
+              question: 'Skills you have',
+              possibleAnswers: ['JavaScript', 'React', 'Node.js', 'Python']
+            },
+          ],
+        });
 
-      const currentProject = projectsData[projectId] || projectsData.p1;
+        const initialAnswers = [
+          { questionNumber: 1, questionType: 'TEXT', question: 'Motivation letter', possibleAnswers: [], answer: '' },
+          { questionNumber: 2, questionType: 'CHECKBOX', question: 'Skills you have', possibleAnswers: ['JavaScript', 'React', 'Node.js', 'Python'], answer: [] }
+        ];
+        setFormData(prev => ({ ...prev, answers: initialAnswers }));
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      setProject(currentProject);
-
-      const initialAnswers = [
-        { questionNumber: 1, questionType: 'text', answer: '' },
-        { questionNumber: 2, questionType: 'file', answer: '' }
-      ];
-
-      setFormData(prev => ({ ...prev, answers: initialAnswers }));
-      setLoading(false);
-    }, 500);
+    fetchProject();
   }, [projectId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAnswerChange = (questionNumber, value) => {
+    setFormData(prev => ({
+      ...prev,
+      answers: prev.answers.map(a =>
+        a.questionNumber === questionNumber ? { ...a, answer: value } : a
+      )
+    }));
+  };
+
+  const handleCheckboxChange = (questionNumber, option) => {
+    setFormData(prev => ({
+      ...prev,
+      answers: prev.answers.map(a => {
+        if (a.questionNumber === questionNumber) {
+          const currentAnswers = Array.isArray(a.answer) ? a.answer : [];
+          return {
+            ...a,
+            answer: currentAnswers.includes(option)
+              ? currentAnswers.filter(item => item !== option)
+              : [...currentAnswers, option]
+          };
+        }
+        return a;
+      })
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -71,20 +112,33 @@ export default function ApplicationForm() {
     setError(null);
 
     try {
+      // Normalize answers: CHECKBOX arrays → pipe-separated string,
+      // drop fields the backend doesn't expect (possibleAnswers).
+      const questionsAnswers = formData.answers.map((a) => ({
+        questionNumber: a.questionNumber,
+        questionType: a.questionType,
+        question: a.question,
+        answer: Array.isArray(a.answer) ? a.answer.join('|') : (a.answer ?? ''),
+      }));
+
       const applicationData = {
-        projectId: projectId,
+        projectId: Number(projectId),       // backend expects a number, not "1"
         firstName: formData.firstName,
         lastName: formData.lastName,
-        questionsAnswers: formData.answers,
+        joinExistentTeam: false,            // Type A: solo applicant, no team yet
+        questionsAnswers,
       };
 
-      // For Type B, add team info
+      // Type B (pre-formed teams) — include team info
       if (!isTypeA) {
-        applicationData.teamName = formData.teamName;
+        applicationData.teamName = formData.teamName || null;
+        applicationData.teammates = formData.teammates?.filter(
+          t => t.firstName?.trim() && t.lastName?.trim()
+        ) ?? [];
       }
 
       await applicationAPI.submitApplication(applicationData);
-      navigate(isTypeA ? '/my-applications' : '/my-applications');
+      navigate('/my-applications');
     } catch (err) {
       console.error('Error submitting application:', err);
       setError(err.message);
@@ -139,7 +193,94 @@ export default function ApplicationForm() {
           {/* Questions */}
           <div className="form-section">
             <h2 className="title-2">Application Questions</h2>
-            {/* Your existing questions rendering code */}
+            {formData.answers.map((q, idx) => (
+              <div key={q.questionNumber} className="question-item">
+                <label className="question-label">{q.question}</label>
+                
+                {q.questionType === 'TEXT' && (
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={q.answer}
+                    onChange={(e) => handleAnswerChange(q.questionNumber, e.target.value)}
+                    placeholder="Enter your answer"
+                  />
+                )}
+
+                {q.questionType === 'TEXTAREA' && (
+                  <textarea
+                    className="form-input"
+                    rows={5}
+                    value={q.answer}
+                    onChange={(e) => handleAnswerChange(q.questionNumber, e.target.value)}
+                    placeholder="Enter your answer"
+                  />
+                )}
+
+                {q.questionType === 'FILE' && (
+                  <input
+                    type="file"
+                    className="form-input"
+                    onChange={(e) => handleAnswerChange(q.questionNumber, e.target.files[0])}
+                  />
+                )}
+
+                {q.questionType === 'CHECKBOX' && (
+                  <div className="checkbox-group">
+                    {(q.possibleAnswers && q.possibleAnswers.length > 0) ? (
+                      q.possibleAnswers.map((option) => (
+                        <label key={option} className="checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={Array.isArray(q.answer) && q.answer.includes(option)}
+                            onChange={() => handleCheckboxChange(q.questionNumber, option)}
+                          />
+                          <span>{option}</span>
+                        </label>
+                      ))
+                    ) : (
+                      <p style={{ color: '#999', fontStyle: 'italic' }}>No options available for this question</p>
+                    )}
+                  </div>
+                )}
+
+                {q.questionType === 'RADIO' && (
+                  <div className="checkbox-group">
+                    {(q.possibleAnswers && q.possibleAnswers.length > 0) ? (
+                      q.possibleAnswers.map((option) => (
+                        <label key={option} className="checkbox-label">
+                          <input
+                            type="radio"
+                            name={`question-${q.questionNumber}`}
+                            value={option}
+                            checked={q.answer === option}
+                            onChange={() => handleAnswerChange(q.questionNumber, option)}
+                          />
+                          <span>{option}</span>
+                        </label>
+                      ))
+                    ) : (
+                      <p style={{ color: '#999', fontStyle: 'italic' }}>No options available for this question</p>
+                    )}
+                  </div>
+                )}
+
+                {q.questionType === 'DROPDOWN' && (
+                  <select
+                    className="form-input"
+                    value={q.answer}
+                    onChange={(e) => handleAnswerChange(q.questionNumber, e.target.value)}
+                  >
+                    <option value="">Select an option</option>
+                    {(q.possibleAnswers && q.possibleAnswers.length > 0) ? (
+                      q.possibleAnswers.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))
+                    ) : null}
+                  </select>
+                )}
+              </div>
+            ))}
           </div>
 
           {error && <p className="error-message" style={{ marginBottom: '20px' }}>{error}</p>}

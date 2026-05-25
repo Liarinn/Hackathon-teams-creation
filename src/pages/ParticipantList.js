@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { downloadParticipantsExcel } from '../utils/downloadParticipantsExcel';
 import { dashboardAPI } from '../services/apiClient';
 
@@ -17,29 +17,24 @@ export default function ParticipantList() {
       try {
         setLoading(true);
         const data = await dashboardAPI.getParticipants(projectId);
-        
-        // Parse response based on backend structure
-        const participants = data.participantsWithTeams || Array.isArray(data) ? data : [];
-        
-        // Separate participants by team
-        const withTeamParticipants = participants.filter(p => p.team && p.team.trim() !== '');
-        const noTeamParticipants = participants.filter(p => !p.team || p.team.trim() === '');
-        
-        setNoTeam(noTeamParticipants);
-        setWithTeam(withTeamParticipants);
+
+        const withTeams    = Array.isArray(data?.participantsWithTeams)    ? data.participantsWithTeams    : [];
+        const withoutTeams = Array.isArray(data?.participantsWithoutTeams) ? data.participantsWithoutTeams : [];
+
+        setWithTeam(withTeams);
+        setNoTeam(withoutTeams);
         setError(null);
       } catch (err) {
         console.error('Error fetching participants:', err);
         setError(err.message);
-        // Fallback to mock data if fetch fails
         setNoTeam([
-          { name: "Andrei Vasile", surname: "", team: "" },
-          { name: "Cristina Marin", surname: "", team: "" },
+          { firstName: 'Andrei',   lastName: 'Vasile', teamName: '' },
+          { firstName: 'Cristina', lastName: 'Marin',  teamName: '' },
         ]);
         setWithTeam([
-          { name: "Anna", surname: "Popescu", team: "Quantum Builders" },
-          { name: "Ion", surname: "Rusu", team: "Quantum Builders" },
-          { name: "Alexandru", surname: "Munteanu", team: "Code Horizon" },
+          { firstName: 'Anna',       lastName: 'Popescu',   teamName: 'Quantum Builders' },
+          { firstName: 'Ion',        lastName: 'Rusu',      teamName: 'Quantum Builders' },
+          { firstName: 'Alexandru',  lastName: 'Munteanu',  teamName: 'Code Horizon' },
         ]);
       } finally {
         setLoading(false);
@@ -109,12 +104,12 @@ export default function ParticipantList() {
             {allParticipants.map((p, index) => (
               <div
                 key={index}
-                className={`table-row ${!p.team ? 'no-team-row' : ''}`}
+                className={`table-row ${!p.teamName ? 'no-team-row' : ''}`}
               >
                 <div>{index + 1}</div>
-                <div>{p.name} {p.surname}</div>
-                <div className={!p.team ? 'no-team-cell' : ''}>
-                  {p.team || '—'}
+                <div>{p.firstName} {p.lastName}</div>
+                <div className={!p.teamName ? 'no-team-cell' : ''}>
+                  {p.teamName || '—'}
                 </div>
               </div>
             ))}
